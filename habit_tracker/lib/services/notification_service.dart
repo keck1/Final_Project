@@ -1,6 +1,9 @@
 import 'dart:async';
-import 'dart:js_util' as js_util;
+// ignore: avoid_web_libraries_in_flutter
 import 'dart:html' as html;
+// ignore: avoid_web_libraries_in_flutter
+import 'dart:js_util' as js_util;
+
 import 'package:habit_tracker/services/local_storage.dart';
 
 import '../models/habit.dart';
