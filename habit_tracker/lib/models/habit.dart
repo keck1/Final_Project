@@ -39,4 +39,23 @@ class Habit {
     notificationInterval: json['notificationInterval'] ?? 0,
     lastCompleted: json['lastCompleted'] != null ? DateTime.parse(json['lastCompleted']) : null,
   );
+  Habit copyWith({
+    String? name,
+    DateTime? dateTime,
+    bool? completed,
+    Frequency? frequency,
+    int? notificationsPerPeriod,
+    int? notificationInterval,
+    DateTime? lastCompleted,
+  }) {
+    return Habit(
+      name: name ?? this.name,
+      dateTime: dateTime ?? this.dateTime,
+      completed: completed ?? this.completed,
+      frequency: frequency ?? this.frequency,
+      notificationsPerPeriod: notificationsPerPeriod ?? this.notificationsPerPeriod,
+      notificationInterval: notificationInterval ?? this.notificationInterval,
+      lastCompleted: lastCompleted ?? this.lastCompleted,
+    );
+  }
 }
