@@ -24,7 +24,6 @@ This application allows users to create and track their habits. It provides feat
 
 *   Improve UI/UX for better user experience.
 *   Implement custom frequency logic for habits.
-*   Add the ability to edit existing habits.
 *   Implement data migration for older app versions.
 *   Add error handling to notification scheduling.
 *   Explore using service workers for more reliable background notifications.

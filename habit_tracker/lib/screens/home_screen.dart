@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import '../models/habit.dart';
 import '../services/local_storage.dart';
@@ -51,6 +52,88 @@ class _HomeScreenState extends State<HomeScreen> {
     });
     await LocalStorage.saveHabits(_habits);
     _loadHabits();
+  }
+
+  void _editHabit(int index) async {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          String editedName = _habits[index].name;
+          DateTime editedTime = _habits[index].dateTime;
+
+          return StatefulBuilder(
+              builder: (context, setState) {
+                return AlertDialog(
+                  title: const Text('Edit Habit'),
+                  content: SingleChildScrollView(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        TextField(
+                          decoration: const InputDecoration(labelText: 'Habit Name'),
+                          controller: TextEditingController(text: editedName),
+                          onChanged: (value) => editedName = value,
+                        ),
+                        const SizedBox(height: 16),
+                        Row(
+                          children: [
+                            const Text('Reminder Time:'),
+                            const SizedBox(width: 8),
+                            TextButton(
+                              onPressed: () async {
+                                final TimeOfDay? pickedTime = await showTimePicker(
+                                    context: context,
+                                    initialTime: TimeOfDay.fromDateTime(editedTime),
+                                );
+                                if (pickedTime != null) {
+                                  setState(() {
+                                    editedTime = DateTime(
+                                      editedTime.year,
+                                      editedTime.month,
+                                      editedTime.day,
+                                      pickedTime.hour,
+                                      pickedTime.minute,
+                                    );
+                                  });
+                                }
+                              },
+                                child: Text(
+                                  DateFormat('HH:mm').format(editedTime),
+                                ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  actions: <Widget>[
+                    TextButton(
+                      child: const Text('Cancel'),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                    ElevatedButton(
+                      child: const Text('Save'),
+                      onPressed: () async {
+                        setState((){
+                          _habits[index] = Habit(
+                            name: editedName,
+                            dateTime: editedTime,
+                            completed: _habits[index].completed,
+                          );
+                        });
+                        await LocalStorage.saveHabits(_habits);
+                        _loadHabits();
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ],
+                );
+              },
+          );
+        },
+    );
   }
 
   @override
@@ -117,10 +200,19 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                           ],
                         ),
-                        trailing: Checkbox(
-                          value: habit.completed,
-                          onChanged: (_) => _toggleCompletion(index),
-                          activeColor: Colors.green,
+                        trailing: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            IconButton(
+                              icon: const Icon(Icons.edit),
+                              onPressed: () => _editHabit(index),
+                            ),
+                            Checkbox(
+                              value: habit.completed,
+                              onChanged: (_) => _toggleCompletion(index),
+                              activeColor: Colors.green,
+                            ),
+                          ],
                         ),
                       ),
                     ),
